@@ -1,25 +1,26 @@
-import {
-    OrbitControls,
-    OrthographicCamera,
-    PivotControls,
-    useAspect,
-} from "@react-three/drei";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { Suspense, useRef, useState } from "react";
-import { TextureLoader } from "three";
+import { OrbitControls, OrthographicCamera } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useCallback, useRef, useState } from "react";
+import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
-export default function Scene({
-    postModel,
-    setPostModel,
-    shelfModel,
-    setShelfModel,
-    distance,
-    setDistance,
-}) {
+export default function Scene({}) {
     const cameraCenter = [0, 1.5, 0];
     const ref = useRef();
     const [isDragging, setIsDragging] = useState(false);
+
+    const takeSnapshot = useCallback(() => {
+        const canvas = ref.current.querySelector("canvas");
+        console.log(canvas);
+        if (canvas) {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = "scene-snapshot.png";
+            link.href = image;
+            link.click();
+        }
+    }, [ref]);
+
     return (
         <div
             ref={ref}
@@ -31,31 +32,31 @@ export default function Scene({
                 height: "100%",
             }}
         >
-            <Canvas shadows>
+            <Canvas shadows gl={{ preserveDrawingBuffer: true }}>
                 <OrthographicCamera
                     makeDefault
                     position={[0, 3, 5]}
                     zoom={200}
                     onUpdate={(self) => self.lookAt(...cameraCenter)}
                 />
-                <color attach="background" args={["#ffffff"]} />
+                <color attach="background" args={["#000000"]} />
                 <Suspense fallback={<Loader />}></Suspense>
                 {!isDragging && <OrbitControls target={cameraCenter} />}
-                <MyImageComponent
+                <ImageObject
                     url="/5.png"
                     position={[0, 1.6, 0]}
                     scale={1}
                     setIsDragging={setIsDragging}
                     renderOrder={2}
                 />
-                <MyImageComponent
+                <ImageObject
                     url="/4.png"
                     position={[0, 1, 0]}
                     scale={1}
                     setIsDragging={setIsDragging}
                     renderOrder={1}
                 />
-                <MyImageComponent
+                <ImageObject
                     url="/6.png"
                     position={[0, 0.4, 0]}
                     scale={1.15}
@@ -63,66 +64,14 @@ export default function Scene({
                     renderOrder={0}
                 />
             </Canvas>
+            <div className="absolute bottom-0 flex flex-row gap-4">
+                <button
+                    className="ml-4 my-4 py-2 px-4 border border-black box-border  bg-white"
+                    onClick={takeSnapshot}
+                >
+                    {"export"}
+                </button>
+            </div>
         </div>
     );
 }
-
-const MyImageComponent = ({
-    url,
-    position,
-    scale = 1,
-    setIsDragging,
-    renderOrder,
-}) => {
-    const texture = useLoader(TextureLoader, url);
-    const [imageWidth, imageHeight] = useAspect(
-        texture.image.width,
-        texture.image.height
-    );
-    const aspectScale = [
-        (imageWidth / 10) * scale,
-        (imageHeight / 10) * scale,
-        1,
-    ];
-    const meshRef = useRef();
-    const pivotRef = useRef();
-    const [controlsVisible, setControlsVisible] = useState(false);
-
-    // Event handler for click
-    const onImageClick = (e) => {
-        e.stopPropagation();
-        setControlsVisible(!controlsVisible); // Toggle visibility of PivotControls
-    };
-
-    return (
-        <>
-            <PivotControls
-                ref={pivotRef}
-                rotation={[0, -Math.PI / 2, Math.PI / 2]}
-                anchor={[1, -1, -1]}
-                scale={75}
-                depthTest={false}
-                fixed
-                lineWidth={2}
-                onDragStart={() => setIsDragging(true)}
-                onDragEnd={() => setIsDragging(false)}
-                visible={controlsVisible}
-            >
-                <mesh
-                    ref={meshRef}
-                    position={position}
-                    scale={aspectScale}
-                    onClick={onImageClick}
-                    renderOrder={renderOrder}
-                >
-                    <planeGeometry args={[1, 1]} />
-                    <meshBasicMaterial
-                        map={texture}
-                        transparent={true}
-                        depthTest={false}
-                    />
-                </mesh>
-            </PivotControls>
-        </>
-    );
-};

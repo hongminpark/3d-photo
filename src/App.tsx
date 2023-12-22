@@ -1,25 +1,13 @@
 // src/App.jsx
-import { useState } from "react";
 import Scene from "./components/Scene";
 import "./index.css";
 
 function App() {
-    const [postModel, setPostModel] = useState("WallMounted");
-    const [shelfModel, setShelfModel] = useState("");
-    const [distance, setDistance] = useState(0.902);
-
     return (
         <div className="flex h-screen w-screen ">
             <div className="w-1/2 h-full bg-gray-200 flex flex-col text-black">
                 <div className="flex-1">
-                    <Scene
-                        postModel={postModel}
-                        setPostModel={setPostModel}
-                        shelfModel={shelfModel}
-                        setShelfModel={setShelfModel}
-                        distance={distance}
-                        setDistance={setDistance}
-                    />
+                    <Scene />
                 </div>
             </div>
             <div className="w-1/2 h-full overflow-y-auto">
