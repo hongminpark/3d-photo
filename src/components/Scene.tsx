@@ -28,12 +28,15 @@ export default function Scene({
     return (
         <div
             ref={ref}
-            // className="p-8"
             style={{
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
                 height: "100%",
+            }}
+            onClick={() => {
+                console.log("click - parent");
+                setCurrentLayer(null);
             }}
         >
             <Canvas shadows gl={{ preserveDrawingBuffer: true }}>
@@ -50,13 +53,9 @@ export default function Scene({
                         layer.visible && (
                             <ImageObject
                                 key={index}
-                                index={index}
                                 layer={layer}
-                                setIsDragging={setIsDragging}
                                 renderOrder={index}
                                 isSelected={index === currentLayer}
-                                setCurrentLayer={() => setCurrentLayer(index)}
-                                setLayers={setLayers}
                             />
                         )
                 )}
