@@ -42,7 +42,6 @@ function App() {
                     <Scene
                         layers={layers}
                         currentLayer={currentLayer}
-                        setLayers={setLayers}
                         setCurrentLayer={setCurrentLayer}
                     />
                 </div>

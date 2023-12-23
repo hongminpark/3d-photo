@@ -4,12 +4,7 @@ import { Suspense, useCallback, useRef, useState } from "react";
 import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
-export default function Scene({
-    layers,
-    setLayers,
-    currentLayer,
-    setCurrentLayer,
-}) {
+export default function Scene({ layers, currentLayer, setCurrentLayer }) {
     const cameraCenter = [0, 1.5, 0];
     const ref = useRef();
     const [isDragging, setIsDragging] = useState(false);
