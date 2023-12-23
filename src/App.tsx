@@ -37,11 +37,12 @@ function App() {
 
     return (
         <div className="flex h-screen w-screen ">
-            <div className="w-1/2 h-full bg-gray-200 flex flex-col text-black">
+            <div className="w-1/2 h-full bg-[#F5F5F5] flex flex-col text-black">
                 <div className="flex-1">
                     <Scene
                         layers={layers}
                         currentLayer={currentLayer}
+                        setLayers={setLayers}
                         setCurrentLayer={setCurrentLayer}
                     />
                 </div>

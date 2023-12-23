@@ -9,6 +9,7 @@ export default function ImageObject({
     renderOrder,
     isSelected,
     setCurrentLayer,
+    setLayers,
 }) {
     const texture = useLoader(TextureLoader, layer.url);
     const [imageWidth, imageHeight] = useAspect(
@@ -21,6 +22,22 @@ export default function ImageObject({
         1,
     ];
     const meshRef = useRef();
+    const handleSize = 0.05; // Size of the corner squares
+    const handleHover = (e, hoverState) => {
+        e.stopPropagation();
+        document.body.style.cursor = hoverState ? "nwse-resize" : "auto"; // 'nwse-resize' is the typical cursor for resizing
+    };
+
+    const createHandle = (position) => (
+        <mesh
+            position={position}
+            onPointerOver={(e) => handleHover(e, true)}
+            onPointerOut={(e) => handleHover(e, false)}
+        >
+            <boxGeometry args={[handleSize, handleSize, handleSize]} />
+            <meshBasicMaterial color="#0A99FF" />
+        </mesh>
+    );
 
     return (
         <mesh
@@ -38,13 +55,20 @@ export default function ImageObject({
                 depthTest={false}
             />
             {isSelected && (
-                <lineSegments>
-                    <edgesGeometry
-                        attach="geometry"
-                        args={[new PlaneGeometry(1, 1)]}
-                    />
-                    <lineBasicMaterial attach="material" color="blue" />
-                </lineSegments>
+                <>
+                    <lineSegments>
+                        <edgesGeometry
+                            attach="geometry"
+                            args={[new PlaneGeometry(1, 1)]}
+                        />
+                        <lineBasicMaterial attach="material" color="#0A99FF" />
+                    </lineSegments>
+                    {/* Create handles at each corner */}
+                    {createHandle([0.5, 0.5, 0])}
+                    {createHandle([-0.5, 0.5, 0])}
+                    {createHandle([-0.5, -0.5, 0])}
+                    {createHandle([0.5, -0.5, 0])}
+                </>
             )}
         </mesh>
     );

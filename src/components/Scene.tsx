@@ -1,10 +1,15 @@
-import { OrbitControls, OrthographicCamera } from "@react-three/drei";
+import { OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useCallback, useRef, useState } from "react";
 import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
-export default function Scene({ layers, currentLayer, setCurrentLayer }) {
+export default function Scene({
+    layers,
+    setLayers,
+    currentLayer,
+    setCurrentLayer,
+}) {
     const cameraCenter = [0, 1.5, 0];
     const ref = useRef();
     const [isDragging, setIsDragging] = useState(false);
@@ -38,19 +43,20 @@ export default function Scene({ layers, currentLayer, setCurrentLayer }) {
                     zoom={200}
                     onUpdate={(self) => self.lookAt(...cameraCenter)}
                 />
-                <color attach="background" args={["#000000"]} />
                 <Suspense fallback={<Loader />}></Suspense>
-                {!isDragging && <OrbitControls target={cameraCenter} />}
+                {/* {!isDragging && <OrbitControls target={cameraCenter} />} */}
                 {layers.map(
                     (layer, index) =>
                         layer.visible && (
                             <ImageObject
-                                key={layer.name}
+                                key={index}
+                                index={index}
                                 layer={layer}
                                 setIsDragging={setIsDragging}
                                 renderOrder={index}
                                 isSelected={index === currentLayer}
                                 setCurrentLayer={() => setCurrentLayer(index)}
+                                setLayers={setLayers}
                             />
                         )
                 )}
