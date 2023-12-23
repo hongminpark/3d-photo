@@ -4,14 +4,13 @@ import { Suspense, useCallback, useRef, useState } from "react";
 import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
-export default function Scene({ layers }) {
+export default function Scene({ layers, currentLayer, setCurrentLayer }) {
     const cameraCenter = [0, 1.5, 0];
     const ref = useRef();
     const [isDragging, setIsDragging] = useState(false);
 
     const takeSnapshot = useCallback(() => {
         const canvas = ref.current.querySelector("canvas");
-        console.log(canvas);
         if (canvas) {
             const image = canvas.toDataURL("image/png");
             const link = document.createElement("a");
@@ -47,11 +46,11 @@ export default function Scene({ layers }) {
                         layer.visible && (
                             <ImageObject
                                 key={layer.name}
-                                url={layer.url}
-                                position={layer.position}
-                                scale={layer.scale}
+                                layer={layer}
                                 setIsDragging={setIsDragging}
                                 renderOrder={index}
+                                isSelected={index === currentLayer}
+                                setCurrentLayer={() => setCurrentLayer(index)}
                             />
                         )
                 )}
