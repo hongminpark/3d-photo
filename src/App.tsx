@@ -3,6 +3,7 @@ import { useState } from "react";
 import LayerControls from "./components/LayerControls";
 import LayersPanel from "./components/LayersPanel";
 import Scene from "./components/Scene";
+import "./custom.css";
 import "./index.css";
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
 
     return (
         <div className="flex h-screen w-screen ">
-            <div className="w-1/2 h-full bg-[#F5F5F5] flex flex-col text-black">
+            <div className="w-3/4 h-full bg-[#F5F5F5] flex flex-col text-black">
                 <div className="flex-1">
                     <Scene
                         layers={layers}
@@ -46,7 +47,7 @@ function App() {
                     />
                 </div>
             </div>
-            <div className="w-1/2 h-full overflow-y-auto">
+            <div className="w-1/4 h-full overflow-y-auto">
                 <div className="p-8 text-medium m-4 ">
                     <p className="font-bold text-lg">SELECT POST TYPE</p>
                     <div className="flex flex-row gap-4 my-4">

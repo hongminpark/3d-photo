@@ -29,10 +29,7 @@ export default function Scene({ layers, currentLayer, setCurrentLayer }) {
                 width: "100%",
                 height: "100%",
             }}
-            onClick={() => {
-                console.log("click - parent");
-                setCurrentLayer(null);
-            }}
+            onClick={() => setCurrentLayer(null)}
         >
             <Canvas shadows gl={{ preserveDrawingBuffer: true }}>
                 <OrthographicCamera

@@ -39,10 +39,10 @@ function LayerControls({ currentLayer, setLayers, layer }) {
     return (
         <>
             <div>MOVE</div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 items-center">
                 <span>X</span>
                 <input
-                    className="w-full"
+                    className="slider-range w-full"
                     type="range"
                     min="-5"
                     max="5"
@@ -53,10 +53,10 @@ function LayerControls({ currentLayer, setLayers, layer }) {
                     }
                 />
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 items-center">
                 <span>Y</span>
                 <input
-                    className="w-full"
+                    className="w-full slider-range "
                     type="range"
                     min="-5"
                     max="5"
@@ -67,20 +67,23 @@ function LayerControls({ currentLayer, setLayers, layer }) {
                     }
                 />
             </div>
-            <div>SCALE</div>
-            <input
-                type="range"
-                min="0"
-                max="10"
-                step="0.1"
-                value={layer.scale}
-                onChange={(e) => onScaleChange(parseFloat(e.target.value))}
-            />
+            <div className="flex flex-row gap-4 items-center">
+                <span>SCALE</span>
+                <input
+                    className="w-full slider-range "
+                    type="range"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value={layer.scale}
+                    onChange={(e) => onScaleChange(parseFloat(e.target.value))}
+                />
+            </div>
             <div>ROTATE</div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 items-center">
                 <span>X</span>
                 <input
-                    className="w-full"
+                    className="w-full slider-range"
                     type="range"
                     min="-5"
                     max="5"
@@ -91,10 +94,10 @@ function LayerControls({ currentLayer, setLayers, layer }) {
                     }
                 />
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 items-center">
                 <span>Y</span>
                 <input
-                    className="w-full"
+                    className="w-full slider-range"
                     type="range"
                     min="-5"
                     max="5"
@@ -105,10 +108,10 @@ function LayerControls({ currentLayer, setLayers, layer }) {
                     }
                 />
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 items-center">
                 <span>Z</span>
                 <input
-                    className="w-full"
+                    className="w-full slider-range"
                     type="range"
                     min={`${-Math.PI * 2}`}
                     max={`${Math.PI * 2}`}
