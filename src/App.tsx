@@ -37,7 +37,7 @@ function App() {
     const [currentLayer, setCurrentLayer] = useState();
 
     return (
-        <div className="flex h-screen w-screen ">
+        <div className="flex h-screen w-screen text-xs text-neutral-900">
             <div className="w-3/4 h-full bg-[#F5F5F5] flex flex-col text-black">
                 <div className="flex-1">
                     <Scene
@@ -48,18 +48,18 @@ function App() {
                 </div>
             </div>
             <div className="w-1/4 h-full overflow-y-auto">
-                <div className="p-8 text-medium m-4 ">
-                    <p className="font-bold text-lg">SELECT POST TYPE</p>
-                    <div className="flex flex-row gap-4 my-4">
+                <div className="text-medium">
+                    <div className="flex flex-row gap-4">
                         <LayersPanel
                             layers={layers}
                             setLayers={setLayers}
+                            currentLayer={currentLayer}
                             setCurrentLayer={setCurrentLayer}
                         />
                     </div>
                 </div>
                 {layers[currentLayer] && (
-                    <div className="p-8 text-medium m-4 flex flex-col gap-2">
+                    <div className="text-medium m-4 flex flex-col gap-2">
                         <LayerControls
                             currentLayer={currentLayer}
                             setLayers={setLayers}

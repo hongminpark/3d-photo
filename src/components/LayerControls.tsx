@@ -37,7 +37,7 @@ function LayerControls({ currentLayer, setLayers, layer }) {
         }
     };
     return (
-        <>
+        <div className="flex flex-col gap-2">
             <div>MOVE</div>
             <div className="flex flex-row gap-4 items-center">
                 <span>X</span>
@@ -122,7 +122,7 @@ function LayerControls({ currentLayer, setLayers, layer }) {
                     }
                 />
             </div>
-        </>
+        </div>
     );
 }
 
