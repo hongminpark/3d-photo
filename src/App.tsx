@@ -42,6 +42,7 @@ function App() {
                 <div className="flex-1">
                     <Scene
                         layers={layers}
+                        setLayers={setLayers}
                         currentLayer={currentLayer}
                         setCurrentLayer={setCurrentLayer}
                     />

@@ -1,13 +1,18 @@
 import { OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useCallback, useRef, useState } from "react";
+import { Suspense, useCallback, useRef } from "react";
 import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
-export default function Scene({ layers, currentLayer, setCurrentLayer }) {
+export default function Scene({
+    layers,
+    setLayers,
+    currentLayer,
+    setCurrentLayer,
+}) {
     const cameraCenter = [0, 1.5, 0];
     const ref = useRef();
-    const [isDragging, setIsDragging] = useState(false);
+    // const [isDragging, setIsDragging] = useState(false);
 
     const takeSnapshot = useCallback(() => {
         const canvas = ref.current.querySelector("canvas");
@@ -20,6 +25,40 @@ export default function Scene({ layers, currentLayer, setCurrentLayer }) {
         }
     }, [ref]);
 
+    function handleDragOver(event) {
+        event.preventDefault(); // Prevent default behavior (Prevent file from being opened)
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+
+        if (event.dataTransfer.items) {
+            for (let i = 0; i < event.dataTransfer.items.length; i++) {
+                if (event.dataTransfer.items[i].kind === "file") {
+                    let file = event.dataTransfer.items[i].getAsFile();
+                    let reader = new FileReader();
+                    reader.onload = (e) => {
+                        setLayers((prevLayers) => [
+                            ...prevLayers,
+                            {
+                                name: file.name,
+                                url: e.target.result,
+                                position: [0, 0, 0],
+                                scale: 1,
+                                rotation: [0, 0, 0],
+                                visible: true,
+                            },
+                        ]);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        } else {
+            for (let i = 0; i < event.dataTransfer.files.length; i++) {
+                // Process the files similarly as above
+            }
+        }
+    }
     return (
         <div
             ref={ref}
@@ -30,6 +69,8 @@ export default function Scene({ layers, currentLayer, setCurrentLayer }) {
                 height: "100%",
             }}
             onClick={() => setCurrentLayer(null)}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
         >
             <Canvas shadows gl={{ preserveDrawingBuffer: true }}>
                 <OrthographicCamera

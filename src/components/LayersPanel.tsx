@@ -22,7 +22,7 @@ const Layer = ({ layer, onToggle, onClick, isSelected }) => {
                         className="w-auto h-4 object-contain"
                     />
                 </div>
-                <span>{layer.url}</span>
+                <span>{layer.name}</span>
             </div>
             {isHovered && (
                 <div className="flex items-center gap-2">
