@@ -1,5 +1,6 @@
 // src/App.jsx
-import { useState } from "react";
+import imglyRemoveBackground from "@imgly/background-removal";
+import { useCallback, useRef, useState } from "react";
 import LayerControls from "./components/LayerControls";
 import LayersPanel from "./components/LayersPanel";
 import Scene from "./components/Scene";
@@ -35,12 +36,40 @@ function App() {
     ]);
 
     const [currentLayer, setCurrentLayer] = useState();
+    const sceneRef = useRef();
+
+    const removeBackground = () => {
+        let imageSrc = layers[currentLayer].url;
+        imglyRemoveBackground(imageSrc).then((blob: Blob) => {
+            const url = URL.createObjectURL(blob);
+            console.log(url);
+            const newLayers = layers.map((layer, index) => {
+                if (index === currentLayer) {
+                    return { ...layer, url };
+                }
+                return layer;
+            });
+            setLayers(newLayers);
+        });
+    };
+
+    const takeSnapshot = useCallback(() => {
+        const canvas = sceneRef.current.querySelector("canvas");
+        if (canvas) {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = "scene-snapshot.png";
+            link.href = image;
+            link.click();
+        }
+    }, [sceneRef]);
 
     return (
         <div className="flex h-screen w-screen text-xs text-neutral-900">
             <div className="w-3/4 h-full bg-[#F5F5F5] flex flex-col text-black">
                 <div className="flex-1">
                     <Scene
+                        ref={sceneRef}
                         layers={layers}
                         setLayers={setLayers}
                         currentLayer={currentLayer}
@@ -66,8 +95,20 @@ function App() {
                             setLayers={setLayers}
                             layer={layers[currentLayer]}
                         />
+                        <button
+                            className="w-max m-4 py-2 px-4 border border-black box-border"
+                            onClick={removeBackground}
+                        >
+                            {"Remove background"}
+                        </button>
                     </div>
                 )}
+                <button
+                    className="w-max m-4 py-2 px-4 border border-black box-border"
+                    onClick={takeSnapshot}
+                >
+                    {"export"}
+                </button>
             </div>
         </div>
     );
