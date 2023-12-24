@@ -1,6 +1,7 @@
 // src/App.jsx
 import imglyRemoveBackground from "@imgly/background-removal";
 import { useCallback, useRef, useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 import LayerControls from "./components/LayerControls";
 import LayersPanel from "./components/LayersPanel";
 import Scene from "./components/Scene";
@@ -37,12 +38,13 @@ function App() {
 
     const [currentLayer, setCurrentLayer] = useState();
     const sceneRef = useRef();
+    const [isRemovingBackground, setIsRemovingBackground] = useState(false);
 
     const removeBackground = () => {
+        setIsRemovingBackground(true); // Show the loading indicator
         let imageSrc = layers[currentLayer].url;
         imglyRemoveBackground(imageSrc).then((blob: Blob) => {
             const url = URL.createObjectURL(blob);
-            console.log(url);
             const newLayers = layers.map((layer, index) => {
                 if (index === currentLayer) {
                     return { ...layer, url };
@@ -50,6 +52,7 @@ function App() {
                 return layer;
             });
             setLayers(newLayers);
+            setIsRemovingBackground(false); // Hide the loading indicator
         });
     };
 
@@ -95,16 +98,28 @@ function App() {
                             setLayers={setLayers}
                             layer={layers[currentLayer]}
                         />
-                        <button
-                            className="w-max m-4 py-2 px-4 border border-black box-border"
-                            onClick={removeBackground}
-                        >
-                            {"Remove background"}
-                        </button>
+                        <div className="relative w-max m-4">
+                            {isRemovingBackground && (
+                                <div
+                                    role="status"
+                                    className="absolute inset-0 flex justify-center items-center"
+                                >
+                                    <LoadingSpinner />
+                                </div>
+                            )}
+                            <button
+                                className={`w-max m-4 py-2 px-4 border border-black box-border ${
+                                    isRemovingBackground ? "opacity-30" : ""
+                                }`}
+                                onClick={removeBackground}
+                            >
+                                {"Remove background"}
+                            </button>
+                        </div>
                     </div>
                 )}
                 <button
-                    className="w-max m-4 py-2 px-4 border border-black box-border"
+                    className="py-2 px-4 border border-black box-border"
                     onClick={takeSnapshot}
                 >
                     {"export"}
