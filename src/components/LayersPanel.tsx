@@ -1,15 +1,55 @@
 import { EyeIcon, EyeSlashIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-const Layer = ({ layer, onToggle, onClick, onDelete, isSelected }) => {
+const Layer = ({
+    id,
+    layer,
+    index,
+    moveLayer,
+    onToggle,
+    onClick,
+    onDelete,
+    isSelected,
+}) => {
+    const ref = useRef(null);
     const [isHovered, setIsHovered] = useState(false);
+
+    const [, drop] = useDrop({
+        accept: ItemTypes.LAYER,
+        hover(item) {
+            if (!ref.current) {
+                return;
+            }
+            const dragIndex = item.index;
+            const hoverIndex = index;
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+            moveLayer(dragIndex, hoverIndex);
+            item.index = hoverIndex;
+        },
+    });
+
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemTypes.LAYER,
+        item: { id, index },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+
+    drag(drop(ref));
+
     return (
         <div
+            ref={ref}
             className={`flex items-center justify-between px-2 py-1 ${
                 isSelected ? "bg-blue-100" : ""
             } border ${
                 isHovered ? "hover:border-blue-500" : "border-transparent"
-            }  `}
+            } ${isDragging ? "opacity-40" : ""}`}
             onClick={onClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -56,6 +96,17 @@ export default function LayerList({
     currentLayer,
     setCurrentLayer,
 }) {
+    const moveLayer = useCallback(
+        (dragIndex, hoverIndex) => {
+            const dragLayer = layers[dragIndex];
+            const updatedLayers = [...layers];
+            updatedLayers.splice(dragIndex, 1);
+            updatedLayers.splice(hoverIndex, 0, dragLayer);
+            setLayers(updatedLayers);
+        },
+        [layers, setLayers]
+    );
+
     const toggleVisibility = (index) => {
         setLayers((layers) =>
             layers.map((layer, i) =>
@@ -67,17 +118,26 @@ export default function LayerList({
         setLayers((layers) => layers.filter((_, i) => i !== index));
     };
     return (
-        <div className="w-full">
-            {layers.map((layer, index) => (
-                <Layer
-                    key={index}
-                    layer={layer}
-                    onToggle={() => toggleVisibility(index)}
-                    onClick={() => setCurrentLayer(index)}
-                    onDelete={() => deleteItem(index)}
-                    isSelected={currentLayer == index}
-                />
-            ))}
-        </div>
+        <DndProvider backend={HTML5Backend}>
+            <div className="w-full">
+                {layers.map((layer, index) => (
+                    <Layer
+                        key={index}
+                        id={index}
+                        index={index}
+                        layer={layer}
+                        moveLayer={moveLayer}
+                        onToggle={() => toggleVisibility(index)}
+                        onClick={() => setCurrentLayer(index)}
+                        onDelete={() => deleteItem(index)}
+                        isSelected={currentLayer === index}
+                    />
+                ))}
+            </div>
+        </DndProvider>
     );
 }
+
+const ItemTypes = {
+    LAYER: "layer",
+};
