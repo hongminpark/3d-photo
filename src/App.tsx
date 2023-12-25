@@ -3,7 +3,7 @@ import imglyRemoveBackground from "@imgly/background-removal";
 import { useCallback, useRef, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import LayerControls from "./components/LayerControls";
-import LayersPanel from "./components/LayersPanel";
+import LayerList from "./components/LayersPanel";
 import Scene from "./components/Scene";
 import "./custom.css";
 import "./index.css";
@@ -83,7 +83,7 @@ function App() {
             <div className="w-1/4 h-full overflow-y-auto">
                 <div className="text-medium">
                     <div className="flex flex-row gap-4">
-                        <LayersPanel
+                        <LayerList
                             layers={layers}
                             setLayers={setLayers}
                             currentLayer={currentLayer}
@@ -92,7 +92,7 @@ function App() {
                     </div>
                 </div>
                 {layers[currentLayer] && (
-                    <div className="text-medium m-4 flex flex-col gap-2">
+                    <div className="text-medium p-4 flex flex-col gap-2">
                         <LayerControls
                             currentLayer={currentLayer}
                             setLayers={setLayers}
@@ -118,12 +118,14 @@ function App() {
                         </div>
                     </div>
                 )}
-                <button
-                    className="py-2 px-4 border border-black box-border"
-                    onClick={takeSnapshot}
-                >
-                    {"export"}
-                </button>
+                <div className="w-max p-4">
+                    <button
+                        className="py-2 px-4 border border-black box-border"
+                        onClick={takeSnapshot}
+                    >
+                        {"export"}
+                    </button>
+                </div>
             </div>
         </div>
     );

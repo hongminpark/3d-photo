@@ -1,7 +1,7 @@
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
-const Layer = ({ layer, onToggle, onClick, isSelected }) => {
+const Layer = ({ layer, onToggle, onClick, onDelete, isSelected }) => {
     const [isHovered, setIsHovered] = useState(false);
     return (
         <div
@@ -37,6 +37,10 @@ const Layer = ({ layer, onToggle, onClick, isSelected }) => {
                             onClick={onToggle}
                         />
                     )}
+                    <TrashIcon
+                        className="h-3 w-3 hover:cursor-pointer"
+                        onClick={onDelete}
+                    />
                     <button className="hover:text-gray-300">
                         <span>&#8942;</span>
                     </button>
@@ -46,7 +50,7 @@ const Layer = ({ layer, onToggle, onClick, isSelected }) => {
     );
 };
 
-export default function LayersPanel({
+export default function LayerList({
     layers,
     setLayers,
     currentLayer,
@@ -59,6 +63,9 @@ export default function LayersPanel({
             )
         );
     };
+    const deleteItem = (index) => {
+        setLayers((layers) => layers.filter((_, i) => i !== index));
+    };
     return (
         <div className="w-full">
             {layers.map((layer, index) => (
@@ -67,6 +74,7 @@ export default function LayersPanel({
                     layer={layer}
                     onToggle={() => toggleVisibility(index)}
                     onClick={() => setCurrentLayer(index)}
+                    onDelete={() => deleteItem(index)}
                     isSelected={currentLayer == index}
                 />
             ))}
