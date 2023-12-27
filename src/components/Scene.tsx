@@ -1,12 +1,15 @@
-import { OrthographicCamera } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { Suspense } from "react";
 import ImageObject from "./ImageObject";
 import Loader from "./Loader";
 
 const Scene = React.forwardRef(
-    ({ layers, setLayers, currentLayer, setCurrentLayer }, ref) => {
-        const cameraCenter = [0, 1.5, 0];
+    (
+        { layers, setLayers, currentLayer, setCurrentLayer, isOrbitEnabled },
+        ref
+    ) => {
+        const cameraCenter = [0, 0, 0];
 
         function handleDragOver(e) {
             e.preventDefault();
@@ -45,11 +48,12 @@ const Scene = React.forwardRef(
         return (
             <div
                 ref={ref}
+                className="border border-gray-300 box-border"
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    width: "100%",
-                    height: "100%",
+                    width: "512px",
+                    height: "512px",
                 }}
                 onClick={() => setCurrentLayer(null)}
                 onDragOver={handleDragOver}
@@ -59,11 +63,11 @@ const Scene = React.forwardRef(
                     <OrthographicCamera
                         makeDefault
                         position={[0, 3, 5]}
-                        zoom={200}
+                        zoom={300}
                         onUpdate={(self) => self.lookAt(...cameraCenter)}
                     />
                     <Suspense fallback={<Loader />}></Suspense>
-                    {/* {!isDragging && <OrbitControls target={cameraCenter} />} */}
+                    {isOrbitEnabled && <OrbitControls target={cameraCenter} />}
                     {layers.map(
                         (layer, index) =>
                             layer.visible && (

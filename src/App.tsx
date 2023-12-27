@@ -13,7 +13,7 @@ function App() {
         {
             name: "Layer 6",
             url: "/6.png",
-            position: [0, 0.4, 0],
+            position: [0, 0, 0],
             scale: 1.15,
             rotation: [0, 0, 0],
             visible: true,
@@ -21,7 +21,7 @@ function App() {
         {
             name: "Layer 5",
             url: "/5.png",
-            position: [0, 1, 0],
+            position: [0, 0.5, 0],
             scale: 1,
             rotation: [0, 0, 0],
             visible: true,
@@ -29,7 +29,7 @@ function App() {
         {
             name: "Layer 4",
             url: "/4.png",
-            position: [0, 1.6, 0],
+            position: [0, -0.5, 0],
             scale: 1,
             rotation: [0, 0, 0],
             visible: true,
@@ -39,6 +39,7 @@ function App() {
     const [currentLayer, setCurrentLayer] = useState();
     const sceneRef = useRef();
     const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+    const [isOrbitEnabled, setIsOrbitEnabled] = useState(false);
 
     const removeBackground = () => {
         setIsRemovingBackground(true); // Show the loading indicator
@@ -70,14 +71,25 @@ function App() {
     return (
         <div className="flex h-screen w-screen text-xs text-neutral-900">
             <div className="w-3/4 h-full bg-[#F5F5F5] flex flex-col text-black">
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col items-center justify-center gap-4">
                     <Scene
                         ref={sceneRef}
                         layers={layers}
                         setLayers={setLayers}
                         currentLayer={currentLayer}
                         setCurrentLayer={setCurrentLayer}
+                        isOrbitEnabled={isOrbitEnabled}
                     />
+                    <button
+                        className="py-2 px-4 border border-black box-border"
+                        onClick={() =>
+                            isOrbitEnabled
+                                ? setIsOrbitEnabled(false)
+                                : setIsOrbitEnabled(true)
+                        }
+                    >
+                        {isOrbitEnabled ? "Disable orbit" : "Enable orbit"}
+                    </button>
                 </div>
             </div>
             <div className="w-1/4 h-full overflow-y-auto">
